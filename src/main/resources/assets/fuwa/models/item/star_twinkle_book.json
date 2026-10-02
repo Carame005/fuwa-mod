@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "fuwa:item/star_twinkle_book_off"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "fuwa:filled": 1.0
+      },
+      "model": "fuwa:item/star_twinkle_book_on"
+    }
+  ]
+}
