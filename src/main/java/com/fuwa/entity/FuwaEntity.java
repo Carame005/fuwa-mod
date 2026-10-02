@@ -8,7 +8,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.TamableAnimal;
@@ -30,34 +29,32 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 
-public class FuwaEntity extends TamableAnimal implements FlyingAnimal {
-    public static final byte EVENT_NOD = 40;
-    public static final byte EVENT_TILT_RIGHT = 41;
-    public static final byte EVENT_TILT_LEFT = 42;
+public class FuwaEntity extends TamableAnimal implements GeoEntity, FlyingAnimal {
+    private static final RawAnimation ANIM_NOD = RawAnimation.begin().thenPlay("head_idle_nod");
+    private static final RawAnimation ANIM_TURN_LEFT = RawAnimation.begin().thenPlay("head_turn_left");
+    private static final RawAnimation ANIM_TURN_RIGHT = RawAnimation.begin().thenPlay("head_turn_right");
+    private static final RawAnimation ANIM_TILT_LEFT = RawAnimation.begin().thenPlay("head_tilt_left");
+    private static final RawAnimation ANIM_TILT_RIGHT = RawAnimation.begin().thenPlay("head_tilt_right");
 
-    public final AnimationState idleLeftState = new AnimationState();
-    public final AnimationState idleRightState = new AnimationState();
-    public final AnimationState nodState = new AnimationState();
-    public final AnimationState tiltRightState = new AnimationState();
-    public final AnimationState tiltLeftState = new AnimationState();
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    private static final int IDLE_GESTURE_TICKS = 40;
-    private static final int IDLE_TILT_TICKS = 45;
-
-    /** Client-only idle scheduler. */
-    private int idlePhaseEndTick;
-    private boolean idlePlayingGesture;
+    private int gestureCooldown;
 
     public FuwaEntity(EntityType<? extends TamableAnimal> type, Level level) {
         super(type, level);
         this.moveControl = new FlyingMoveControl(this, 20, true);
         this.setNoGravity(true);
-        // Primera animación pronto (~1–2 s), luego ya entra el ritmo con pausas.
-        this.idlePhaseEndTick = 20 + this.random.nextInt(20);
-        this.idlePlayingGesture = false;
+        this.gestureCooldown = 20 + this.random.nextInt(20);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -106,61 +103,16 @@ public class FuwaEntity extends TamableAnimal implements FlyingAnimal {
         // Vuela cuando no está en modo quieto; al sentarse cae / se queda en el sitio.
         this.setNoGravity(!this.isOrderedToSit());
 
-        if (this.level().isClientSide()) {
-            this.updateIdleAnimationStates();
-        }
-    }
-
-    private void updateIdleAnimationStates() {
-        if (this.tickCount < this.idlePhaseEndTick) {
-            return;
-        }
-
-        if (this.idlePlayingGesture) {
-            // Terminó el gesto -> pausa quieta 3–5 s
-            this.stopAmbientIdleStates();
-            this.idlePlayingGesture = false;
-            this.idlePhaseEndTick = this.tickCount + 60 + this.random.nextInt(40);
-            return;
-        }
-
-        // Terminó la pausa -> siempre un gesto (mirar o tilt)
-        this.stopAmbientIdleStates();
-        int roll = this.random.nextInt(4);
-        switch (roll) {
-            case 0 -> {
-                this.idleLeftState.start(this.tickCount);
-                this.idlePhaseEndTick = this.tickCount + IDLE_GESTURE_TICKS;
-            }
-            case 1 -> {
-                this.idleRightState.start(this.tickCount);
-                this.idlePhaseEndTick = this.tickCount + IDLE_GESTURE_TICKS;
-            }
-            case 2 -> {
-                this.tiltLeftState.start(this.tickCount);
-                this.idlePhaseEndTick = this.tickCount + IDLE_TILT_TICKS;
-            }
-            default -> {
-                this.tiltRightState.start(this.tickCount);
-                this.idlePhaseEndTick = this.tickCount + IDLE_TILT_TICKS;
+        // Gestos de cabeza aleatorios con pausas (controlados desde el servidor).
+        if (!this.level().isClientSide() && this.gestureCooldown-- <= 0) {
+            this.gestureCooldown = 60 + this.random.nextInt(40);
+            switch (this.random.nextInt(4)) {
+                case 0 -> this.triggerAnim("gesture", "turn_left");
+                case 1 -> this.triggerAnim("gesture", "turn_right");
+                case 2 -> this.triggerAnim("gesture", "tilt_left");
+                default -> this.triggerAnim("gesture", "tilt_right");
             }
         }
-        this.idlePlayingGesture = true;
-    }
-
-    private void stopAmbientIdleStates() {
-        this.idleLeftState.stop();
-        this.idleRightState.stop();
-        this.tiltLeftState.stop();
-        this.tiltRightState.stop();
-    }
-
-    private void playOneShotIdleInterrupt(AnimationState state, int durationTicks) {
-        this.stopAmbientIdleStates();
-        this.nodState.stop();
-        state.start(this.tickCount);
-        this.idlePlayingGesture = true;
-        this.idlePhaseEndTick = this.tickCount + durationTicks;
     }
 
     @Override
@@ -239,7 +191,7 @@ public class FuwaEntity extends TamableAnimal implements FlyingAnimal {
                         this.setTarget(null);
                         this.setOrderedToSit(true);
                         this.level().broadcastEntityEvent(this, (byte) 7);
-                        this.level().broadcastEntityEvent(this, EVENT_NOD);
+                        this.triggerAnim("gesture", "nod");
                     } else {
                         this.level().broadcastEntityEvent(this, (byte) 6);
                     }
@@ -258,6 +210,13 @@ public class FuwaEntity extends TamableAnimal implements FlyingAnimal {
                 return InteractionResult.sidedSuccess(this.level().isClientSide());
             }
 
+            // Shift + empty Star Twinkle Book is handled by the item (capture).
+            if (player.isSecondaryUseActive()
+                    && stack.is(ModItems.STAR_TWINKLE_BOOK.get())
+                    && !com.fuwa.item.CompanionCatchItem.isFilled(stack)) {
+                return InteractionResult.PASS;
+            }
+
             if (!this.level().isClientSide()) {
                 boolean sit = !this.isOrderedToSit();
                 this.setOrderedToSit(sit);
@@ -266,7 +225,7 @@ public class FuwaEntity extends TamableAnimal implements FlyingAnimal {
                 this.setTarget(null);
                 this.setNoGravity(!sit);
                 if (sit) {
-                    this.level().broadcastEntityEvent(this, EVENT_NOD);
+                    this.triggerAnim("gesture", "nod");
                 }
             }
             return InteractionResult.sidedSuccess(this.level().isClientSide());
@@ -276,17 +235,22 @@ public class FuwaEntity extends TamableAnimal implements FlyingAnimal {
     }
 
     @Override
-    public void handleEntityEvent(byte id) {
-        switch (id) {
-            case EVENT_NOD -> this.playOneShotIdleInterrupt(this.nodState, 30);
-            case EVENT_TILT_RIGHT -> this.playOneShotIdleInterrupt(this.tiltRightState, IDLE_TILT_TICKS);
-            case EVENT_TILT_LEFT -> this.playOneShotIdleInterrupt(this.tiltLeftState, IDLE_TILT_TICKS);
-            default -> super.handleEntityEvent(id);
-        }
+    public boolean canBeLeashed(Player player) {
+        return this.isTame() && super.canBeLeashed(player);
     }
 
     @Override
-    public boolean canBeLeashed(Player player) {
-        return this.isTame() && super.canBeLeashed(player);
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "gesture", 5, state -> PlayState.STOP)
+                .triggerableAnim("nod", ANIM_NOD)
+                .triggerableAnim("turn_left", ANIM_TURN_LEFT)
+                .triggerableAnim("turn_right", ANIM_TURN_RIGHT)
+                .triggerableAnim("tilt_left", ANIM_TILT_LEFT)
+                .triggerableAnim("tilt_right", ANIM_TILT_RIGHT));
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
     }
 }

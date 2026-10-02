@@ -20,6 +20,9 @@ public class ModCreativeModeTabs {
                     .displayItems((parameters, output) -> {
                         output.accept(ModItems.STELLAR_DONUT.get());
                         output.accept(ModItems.FUWA_SPAWN_EGG.get());
+                        output.accept(ModItems.PRUNCE_SPAWN_EGG.get());
+                        output.accept(ModItems.PRUNCE_CAPSULE.get());
+                        output.accept(ModItems.STAR_TWINKLE_BOOK.get());
                     })
                     .build());
 

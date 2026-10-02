@@ -1,6 +1,14 @@
 {
   "entity.fuwa.fuwa": "Fuwa",
+  "entity.fuwa.prunce": "Prunce",
   "item.fuwa.fuwa_spawn_egg": "Huevo de generación de Fuwa",
+  "item.fuwa.prunce_spawn_egg": "Huevo de generación de Prunce",
   "item.fuwa.stellar_donut": "Donut Estelar",
+  "item.fuwa.prunce_capsule": "Cápsula de Prunce",
+  "item.fuwa.prunce_capsule.empty": "Vacía",
+  "item.fuwa.prunce_capsule.filled": "Contiene a Prunce",
+  "item.fuwa.star_twinkle_book": "Star Twinkle Book",
+  "item.fuwa.star_twinkle_book.empty": "Vacío",
+  "item.fuwa.star_twinkle_book.filled": "Contiene a Fuwa",
   "itemGroup.fuwa": "Fuwa"
 }
