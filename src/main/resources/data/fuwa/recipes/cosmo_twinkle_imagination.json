@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RCG",
+    "QSE",
+    "ALD"
+  ],
+  "key": {
+    "R": { "item": "minecraft:redstone" },
+    "C": { "item": "minecraft:copper_ingot" },
+    "G": { "item": "minecraft:gold_ingot" },
+    "Q": { "item": "minecraft:quartz" },
+    "S": { "item": "fuwa:twinkle_imagination" },
+    "E": { "item": "minecraft:emerald" },
+    "A": { "item": "minecraft:amethyst_shard" },
+    "L": { "item": "minecraft:lapis_lazuli" },
+    "D": { "item": "minecraft:diamond" }
+  },
+  "result": {
+    "item": "fuwa:cosmo_twinkle_imagination",
+    "count": 1
+  }
+}

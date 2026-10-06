@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " B ",
+    "GSF",
+    " I "
+  ],
+  "key": {
+    "B": { "item": "minecraft:book" },
+    "G": { "item": "minecraft:glowstone_dust" },
+    "S": { "item": "fuwa:twinkle_imagination" },
+    "F": { "item": "minecraft:feather" },
+    "I": { "item": "minecraft:ink_sac" }
+  },
+  "result": {
+    "item": "fuwa:star_twinkle_imagination",
+    "count": 1
+  }
+}

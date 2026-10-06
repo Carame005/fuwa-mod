@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " H ",
+    "STS",
+    "G G"
+  ],
+  "key": {
+    "H": { "item": "minecraft:golden_helmet" },
+    "S": { "item": "minecraft:string" },
+    "T": { "item": "fuwa:milky_twinkle_imagination" },
+    "G": { "item": "minecraft:gold_ingot" }
+  },
+  "result": {
+    "item": "fuwa:milky_antenna",
+    "count": 1
+  }
+}

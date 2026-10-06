@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "LML",
+    "LTL",
+    "CIC"
+  ],
+  "key": {
+    "L": { "item": "minecraft:leather" },
+    "M": { "item": "minecraft:magma_cream" },
+    "T": { "item": "fuwa:soleil_twinkle_imagination" },
+    "C": { "item": "minecraft:obsidian" },
+    "I": { "item": "minecraft:iron_boots" }
+  },
+  "result": {
+    "item": "fuwa:soleil_boots",
+    "count": 1
+  }
+}

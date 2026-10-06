@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " I ",
+    "BTI",
+    " I "
+  ],
+  "key": {
+    "I": { "item": "minecraft:ice" },
+    "B": { "item": "minecraft:bow" },
+    "T": { "item": "fuwa:selene_twinkle_imagination" }
+  },
+  "result": {
+    "item": "fuwa:selene_bow",
+    "count": 1
+  }
+}

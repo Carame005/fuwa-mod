@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WBW",
+    "USU",
+    "WMW"
+  ],
+  "key": {
+    "W": { "item": "minecraft:wheat" },
+    "B": { "item": "minecraft:book" },
+    "U": { "item": "minecraft:sugar" },
+    "S": { "item": "fuwa:twinkle_imagination" },
+    "M": { "item": "minecraft:milk_bucket" }
+  },
+  "result": {
+    "item": "fuwa:milky_twinkle_imagination",
+    "count": 1
+  }
+}

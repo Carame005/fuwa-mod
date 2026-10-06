@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " I ",
+    "ASE",
+    " M "
+  ],
+  "key": {
+    "I": { "item": "minecraft:ice" },
+    "A": { "item": "minecraft:arrow" },
+    "S": { "item": "fuwa:twinkle_imagination" },
+    "E": { "item": "minecraft:snowball" },
+    "M": { "item": "minecraft:amethyst_shard" }
+  },
+  "result": {
+    "item": "fuwa:selene_twinkle_imagination",
+    "count": 1
+  }
+}

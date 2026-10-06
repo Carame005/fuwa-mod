@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "fuwa:block/twinkle_generator" },
+    "facing=south": { "model": "fuwa:block/twinkle_generator", "y": 180 },
+    "facing=west":  { "model": "fuwa:block/twinkle_generator", "y": 270 },
+    "facing=east":  { "model": "fuwa:block/twinkle_generator", "y": 90 }
+  }
+}

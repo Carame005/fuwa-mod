@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "MSB",
+    " G "
+  ],
+  "key": {
+    "C": { "item": "minecraft:cactus" },
+    "M": { "item": "minecraft:magma_cream" },
+    "S": { "item": "fuwa:twinkle_imagination" },
+    "B": { "item": "minecraft:blaze_rod" },
+    "G": { "item": "minecraft:magma_block" }
+  },
+  "result": {
+    "item": "fuwa:soleil_twinkle_imagination",
+    "count": 1
+  }
+}

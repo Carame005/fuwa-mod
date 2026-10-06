@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PGP",
+    "GTG",
+    "PSP"
+  ],
+  "key": {
+    "P": { "item": "minecraft:gunpowder" },
+    "G": { "item": "minecraft:glowstone_dust" },
+    "T": { "item": "fuwa:star_twinkle_imagination" },
+    "S": { "item": "minecraft:shield" }
+  },
+  "result": {
+    "item": "fuwa:star_punch",
+    "count": 1
+  }
+}
