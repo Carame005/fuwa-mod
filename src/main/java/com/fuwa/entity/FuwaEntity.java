@@ -20,12 +20,14 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.PanicGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.SitWhenOrderedToGoal;
+import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomFlyingGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -80,20 +82,32 @@ public class FuwaEntity extends TamableAnimal implements GeoEntity, FlyingAnimal
         this.goalSelector.addGoal(1, new SitWhenOrderedToGoal(this));
         // Empieza a seguir si se aleja ~5 bloques y se queda cerca (~1.5)
         this.goalSelector.addGoal(2, new FollowOwnerGoal(this, 1.2D, 5.0F, 1.5F, true));
-        this.goalSelector.addGoal(3, new PanicGoal(this, 1.4D) {
+        // Wild Fuwa follow players holding a Stellar Donut.
+        this.goalSelector.addGoal(3, new TemptGoal(this, 1.15D, Ingredient.of(ModItems.STELLAR_DONUT.get()), false) {
+            @Override
+            public boolean canUse() {
+                return !FuwaEntity.this.isTame() && super.canUse();
+            }
+
+            @Override
+            public boolean canContinueToUse() {
+                return !FuwaEntity.this.isTame() && super.canContinueToUse();
+            }
+        });
+        this.goalSelector.addGoal(4, new PanicGoal(this, 1.4D) {
             @Override
             public boolean canUse() {
                 return !FuwaEntity.this.isTame() && super.canUse();
             }
         });
-        this.goalSelector.addGoal(4, new WaterAvoidingRandomFlyingGoal(this, 1.0D) {
+        this.goalSelector.addGoal(5, new WaterAvoidingRandomFlyingGoal(this, 1.0D) {
             @Override
             public boolean canUse() {
                 return !FuwaEntity.this.isOrderedToSit() && super.canUse();
             }
         });
-        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
     }
 
     @Override
@@ -187,6 +201,7 @@ public class FuwaEntity extends TamableAnimal implements GeoEntity, FlyingAnimal
                 if (!this.level().isClientSide()) {
                     if (this.random.nextInt(3) == 0) {
                         this.tame(player);
+                        CompanionProgress.markFuwaTamed(player);
                         this.navigation.stop();
                         this.setTarget(null);
                         this.setOrderedToSit(true);
@@ -210,9 +225,9 @@ public class FuwaEntity extends TamableAnimal implements GeoEntity, FlyingAnimal
                 return InteractionResult.sidedSuccess(this.level().isClientSide());
             }
 
-            // Shift + empty Star Twinkle Book is handled by the item (capture).
+            // Shift + empty Twinkle Book is handled by the item (capture).
             if (player.isSecondaryUseActive()
-                    && stack.is(ModItems.STAR_TWINKLE_BOOK.get())
+                    && stack.is(ModItems.TWINKLE_BOOK.get())
                     && !com.fuwa.item.CompanionCatchItem.isFilled(stack)) {
                 return InteractionResult.PASS;
             }

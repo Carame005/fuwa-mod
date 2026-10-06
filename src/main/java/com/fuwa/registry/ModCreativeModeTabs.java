@@ -22,7 +22,19 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.FUWA_SPAWN_EGG.get());
                         output.accept(ModItems.PRUNCE_SPAWN_EGG.get());
                         output.accept(ModItems.PRUNCE_CAPSULE.get());
-                        output.accept(ModItems.STAR_TWINKLE_BOOK.get());
+                        output.accept(ModItems.TWINKLE_BOOK.get());
+                        output.accept(ModItems.STAR_PUNCH.get());
+                        output.accept(ModItems.MILKY_ANTENNA.get());
+                        output.accept(ModItems.SOLEIL_BOOTS.get());
+                        output.accept(ModItems.SELENE_BOW.get());
+                        output.accept(ModItems.COSMO_SHINING.get());
+                        output.accept(ModBlocks.TWINKLE_GENERATOR.get());
+                        output.accept(ModItems.TWINKLE_IMAGINATION.get());
+                        output.accept(ModItems.SELENE_TWINKLE_IMAGINATION.get());
+                        output.accept(ModItems.SOLEIL_TWINKLE_IMAGINATION.get());
+                        output.accept(ModItems.MILKY_TWINKLE_IMAGINATION.get());
+                        output.accept(ModItems.STAR_TWINKLE_IMAGINATION.get());
+                        output.accept(ModItems.COSMO_TWINKLE_IMAGINATION.get());
                     })
                     .build());
 

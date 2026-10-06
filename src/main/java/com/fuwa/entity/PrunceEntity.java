@@ -28,12 +28,14 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.PanicGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.SitWhenOrderedToGoal;
+import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomFlyingGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -114,13 +116,29 @@ public class PrunceEntity extends TamableAnimal implements GeoEntity, FlyingAnim
                 return !PrunceEntity.this.isOnHead() && super.canContinueToUse();
             }
         });
-        this.goalSelector.addGoal(3, new PanicGoal(this, 1.4D) {
+        // Wild Prunce follow players holding a Stellar Donut.
+        this.goalSelector.addGoal(3, new TemptGoal(this, 1.15D, Ingredient.of(ModItems.STELLAR_DONUT.get()), false) {
+            @Override
+            public boolean canUse() {
+                return !PrunceEntity.this.isTame()
+                        && !PrunceEntity.this.isOnHead()
+                        && super.canUse();
+            }
+
+            @Override
+            public boolean canContinueToUse() {
+                return !PrunceEntity.this.isTame()
+                        && !PrunceEntity.this.isOnHead()
+                        && super.canContinueToUse();
+            }
+        });
+        this.goalSelector.addGoal(4, new PanicGoal(this, 1.4D) {
             @Override
             public boolean canUse() {
                 return !PrunceEntity.this.isTame() && !PrunceEntity.this.isOnHead() && super.canUse();
             }
         });
-        this.goalSelector.addGoal(4, new WaterAvoidingRandomFlyingGoal(this, 1.0D) {
+        this.goalSelector.addGoal(5, new WaterAvoidingRandomFlyingGoal(this, 1.0D) {
             @Override
             public boolean canUse() {
                 return !PrunceEntity.this.isOrderedToSit()
@@ -128,13 +146,13 @@ public class PrunceEntity extends TamableAnimal implements GeoEntity, FlyingAnim
                         && super.canUse();
             }
         });
-        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F) {
+        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F) {
             @Override
             public boolean canUse() {
                 return !PrunceEntity.this.isOnHead() && super.canUse();
             }
         });
-        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this) {
+        this.goalSelector.addGoal(7, new RandomLookAroundGoal(this) {
             @Override
             public boolean canUse() {
                 return !PrunceEntity.this.isOnHead() && super.canUse();
@@ -318,6 +336,7 @@ public class PrunceEntity extends TamableAnimal implements GeoEntity, FlyingAnim
                 if (!this.level().isClientSide()) {
                     if (this.random.nextInt(3) == 0) {
                         this.tame(player);
+                        CompanionProgress.markPrunceTamed(player);
                         this.navigation.stop();
                         this.setTarget(null);
                         this.setOrderedToSit(true);

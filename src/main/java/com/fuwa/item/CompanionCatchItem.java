@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * Catch/release item for a tameable companion (Prunce capsule, Star Twinkle Book, etc.).
+ * Catch/release item for a tameable companion (Prunce capsule, Twinkle Book, etc.).
  */
 public class CompanionCatchItem extends Item {
     public static final String TAG_STORED = "StoredEntity";
